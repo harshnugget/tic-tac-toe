@@ -2,25 +2,23 @@ function gameboard() {
 
     const rows = 3;
     const columns = 3;
-    const board = [];  
+    const boardArray = [];  
 
     // Create board, each cell is assigned a null token by default
     for (let i = 0; i < rows; i++) {
-        board[i] = []
+        boardArray[i] = []
         for (let j = 0; j < columns; j++) {
-            board[i][j] = null;
+            boardArray[i][j] = null;
         }
     }
 
-    // Method for getting board
-    const getBoard = () => board ;
-
-    return { getBoard, rows, columns }
+    return { boardArray, rows, columns }
 }
 
 function gameController(playerOneName="Player One", playerTwoName="Player Two") {
     const board = gameboard()
-    const boardArray = board.getBoard();
+    const boardArray = board.boardArray;
+    let gameState = undefined;
 
     const players = [
         {
@@ -46,15 +44,28 @@ function gameController(playerOneName="Player One", playerTwoName="Player Two") 
 
     // Method for placing a token on the board
     function placeToken(row, column) {
+        if (gameState === "win" || gameState === "draw") {
+            return;
+        }
+
         if (boardArray[row][column] === null) {
             boardArray[row][column] = activePlayer.token;
         } else {
             return console.log("This spot is already taken!");
         }
-        checkForWin();
-        toggleActivePlayer();
-        printBoard();
-        console.log(`${activePlayer.name}'s turn`)
+
+        switch (checkForWin()) {
+            case 1:
+                gameState = "win";
+                break;
+            case 2:
+                gameState = "draw";
+                break;
+            default:
+                toggleActivePlayer();
+                printBoard();
+                console.log(`${activePlayer.name}'s turn`)             
+        }
     }
 
     // Function to check for a draw or a win
@@ -102,20 +113,94 @@ function gameController(playerOneName="Player One", playerTwoName="Player Two") 
         }
 
         if (rowWin === true || columnWin === true || diagonalWin1 === true || diagonalWin2 === true) {
-            return console.log(`${activePlayer.name} WINS!`);
+            console.log(`${activePlayer.name} WINS!`);
+            return 1;
         }
 
         if (draw === true) {
-            return console.log(`DRAW!`);
+            console.log(`DRAW!`);
+            return 2;
         }
     }
+
+    const resetGame = () => {
+        gameState = undefined;
+        activePlayer = players[0];
+
+        for (let i = 0; i < board.rows; i++) {
+            for (let j = 0; j < board.columns; j++) {
+                boardArray[i][j] = null;
+            }
+        }
+    }
+
+    // Method for retrieving win condition
+    const getGameState = () => gameState;
     
     // Method for printing the board to console
     const printBoard = () => console.log(boardArray);
 
-    return { getActivePlayer, placeToken, printBoard }
+    return { boardArray, getActivePlayer, placeToken, resetGame, gameState: getGameState, printBoard }
 }
 
 function displayController() {
     // to do
+    const game = gameController();
+
+    const playerTurnDiv = document.querySelector(".turn");
+    const boardDiv = document.querySelector(".board");
+    const resetButton = document.querySelector("#reset-button");
+
+    resetButton.addEventListener("click", () => {
+        game.resetGame();
+        updateScreen();
+    });
+
+    const updateScreen = () => {
+        // Clear board
+        boardDiv.textContent = "";
+    
+        // Get the newest version of the board and player turn
+        const boardArray = game.boardArray;
+        const activePlayer = game.getActivePlayer();
+    
+        // Display game state
+        if (game.gameState() === "win") {
+            playerTurnDiv.textContent = `${activePlayer.name} wins!`;
+        } else if (game.gameState() === "draw") {
+            playerTurnDiv.textContent = `It's a draw!`;
+        } else {
+            playerTurnDiv.textContent = `${activePlayer.name}'s turn...`; 
+        }
+
+        // Render board squares
+        boardArray.forEach((row, rowIndex) => {
+            row.forEach((token, columnIndex) => {
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                cellButton.dataset.row = rowIndex
+                cellButton.dataset.column = columnIndex
+                cellButton.textContent = token;
+                boardDiv.appendChild(cellButton);
+            })
+        });
+    }
+
+    // Add event listener for the board
+    function clickHandlerBoard(e) {
+        const selectedRow = e.target.dataset.row;
+        const selectedColumn = e.target.dataset.column;
+
+        // Make sure a column is clicked
+        if (!selectedColumn) return;
+
+        game.placeToken(selectedRow, selectedColumn);
+        updateScreen();
+    }
+    boardDiv.addEventListener("click", clickHandlerBoard);
+
+    // Initial render
+    updateScreen();
 }
+
+displayController();

@@ -11,9 +11,9 @@
 <dialog id="playerSelection">
     <form>
         <label for="playerOne">Player One Name: </label>
-        <input type="text" name="playerOne"  required>
+        <input type="text" id="playerOne" maxlength="16" placeholder="Player One">
         <label for="playerTwo">Player Two Name: </label>
-        <input type="text" name="playerTwo"  required>
+        <input type="text" id="playerTwo" maxlength="16" placeholder="Player Two">
       <div>
         <button id="confirmBtn" value="default">Confirm</button>
       </div>
@@ -24,7 +24,7 @@
         <h1>Tic Tac Toe</h1>
     </header>
     <div class="container">
-        <h1 class="turn"></h1>
+        <h2 class="turn"></h2>
         <div class="board"></div>
         <button id="reset-button">RESET</button>
     </div>

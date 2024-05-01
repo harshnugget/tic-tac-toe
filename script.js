@@ -147,6 +147,7 @@ function displayController() {
     // Set names
     setNames();
 
+    // Create game
     const game = gameController();
 
     const playerTurnDiv = document.querySelector(".turn");
@@ -201,17 +202,16 @@ function displayController() {
     }
     boardDiv.addEventListener("click", clickHandlerBoard);
 
-    // Initial render
-    updateScreen();
-
-    // Function for setting names
     function setNames() {
-        document.querySelector(".container").style.visibility = "hidden";
+        // Hide player turn header
+        document.querySelector(".turn").style.visibility = "hidden";
+
         const playerSelection = document.getElementById("playerSelection");
-        const playerOneName = playerSelection.querySelector('input[name="playerOne"]');
-        const playerTwoName = playerSelection.querySelector('input[name="playerTwo"]');
+        const playerOneName = document.getElementById("playerOne");
+        const playerTwoName = document.getElementById("playerTwo");
         const confirmBtn = playerSelection.querySelector("#confirmBtn");
-    
+
+        // Display the choose names interface
         playerSelection.showModal();
         
         // Event controller for updating names
@@ -225,10 +225,16 @@ function displayController() {
             if (playerTwoName.value) {
                 game.players[1].name = playerTwoName.value;
             }
-            document.querySelector(".container").style.visibility = "visible";
+            // Unhide player turn header
+            document.querySelector(".turn").style.visibility = "visible";
+            
+            // Update the screen to show player names
             updateScreen();
         });
     };
+
+    // Initial render
+    updateScreen();
 }
 
 displayController();

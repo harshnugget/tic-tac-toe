@@ -23,11 +23,11 @@ function gameController(playerOneName="Player One", playerTwoName="Player Two") 
     const players = [
         {
           name: playerOneName,
-          token: 1
+          token: "X"
         },
         {
           name: playerTwoName,
-          token: 2
+          token: "O"
         }
       ];
 
@@ -140,11 +140,13 @@ function gameController(playerOneName="Player One", playerTwoName="Player Two") 
     // Method for printing the board to console
     const printBoard = () => console.log(boardArray);
 
-    return { boardArray, getActivePlayer, placeToken, resetGame, gameState: getGameState, printBoard }
+    return { boardArray, getActivePlayer, placeToken, resetGame, gameState: getGameState, printBoard, players }
 }
 
 function displayController() {
-    // to do
+    // Set names
+    setNames();
+
     const game = gameController();
 
     const playerTurnDiv = document.querySelector(".turn");
@@ -201,6 +203,32 @@ function displayController() {
 
     // Initial render
     updateScreen();
+
+    // Function for setting names
+    function setNames() {
+        document.querySelector(".container").style.visibility = "hidden";
+        const playerSelection = document.getElementById("playerSelection");
+        const playerOneName = playerSelection.querySelector('input[name="playerOne"]');
+        const playerTwoName = playerSelection.querySelector('input[name="playerTwo"]');
+        const confirmBtn = playerSelection.querySelector("#confirmBtn");
+    
+        playerSelection.showModal();
+        
+        // Event controller for updating names
+        confirmBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            playerSelection.close();
+            
+            if (playerOneName.value) {
+                game.players[0].name = playerOneName.value;
+            }
+            if (playerTwoName.value) {
+                game.players[1].name = playerTwoName.value;
+            }
+            document.querySelector(".container").style.visibility = "visible";
+            updateScreen();
+        });
+    };
 }
 
 displayController();

@@ -7,6 +7,22 @@
     <link href="styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<!-- A modal dialog containing a form -->
+<dialog id="playerSelection">
+    <form>
+        <label for="playerOne">Player One Name: </label>
+        <input type="text" name="playerOne"  required>
+        <label for="playerTwo">Player Two Name: </label>
+        <input type="text" name="playerTwo"  required>
+      <div>
+        <button id="confirmBtn" value="default">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+    <header>
+        <h1>Tic Tac Toe</h1>
+    </header>
     <div class="container">
         <h1 class="turn"></h1>
         <div class="board"></div>

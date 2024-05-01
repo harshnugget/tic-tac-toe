@@ -1,5 +1,26 @@
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog {
+  margin: auto auto;
+}
+
+header {
+  background-color: aqua;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.container {
+  align-self: center;
 }
 
 .board {
